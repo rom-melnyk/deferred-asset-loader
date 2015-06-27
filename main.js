@@ -51,6 +51,7 @@ Loader.load(loadingImg).then(function (imgAssets) {
 		contentDiv.appendChild(imgAssets[loadingImg]);
 	}
 
+	// both `minTime` and `maxTime` probably must be 10 for your case
 	Loader.load(videoOne, videoTwo, videoThree, videoFour, {minTime: 5, maxTime: 5}).then(function (videoAssets) {
 		var v1, v2, v3, v4;
 		hide(imgAssets[loadingImg]);
