@@ -1,9 +1,17 @@
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
 }
 
-body {
+#content {
+	position: relative;
+}
 
+#content img, #content video {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 800px;
+	height: auto;
 }
