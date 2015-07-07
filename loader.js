@@ -1,11 +1,20 @@
 (function () {
 	var IMAGE_EXTENSIONS = ('jpg,jpeg,gif,bmp,png').split(',');
-	var VIDEO_EXTENSIONS = ('mpg,mpeg,mp4,flv,ogg').split(',');
+	var VIDEO_EXTENSIONS = ('mpg,mpeg,mp4,m4v,flv,ogg,webm,theora.ogv').split(',');
 
 	function getExtension (filename) {
-		var ext = /\.([^.]*$)/i.exec(filename);
-		ext = ext ? ext[1] : '';
-		return ext.toLowerCase();
+		var splitted = filename.toLowerCase().split('.');
+		if (splitted.length === 1) {
+			return '';
+		} else if (splitted[splitted.length - 1] === 'ogv') {
+			if (splitted[splitted.length - 2] === 'theora') {
+				return 'theora.ogv';
+			} else {
+				return 'ogv';
+			}
+		} else {
+			return splitted[splitted.length - 1];
+		}
 	}
 
 	function isImage (ext) {
@@ -20,6 +29,7 @@
 		/**
 		 * @param {...String} assets					one or more filenames to load
 		 * @param {Object} [options]
+		 * @param {String[]} [options.alternatives]		alternative filenames (will be set in <source> tag)
 		 * @param {Number} [options.minTime=0]			minimum timeout for callback invoking
 		 * 												(even if the resource was already loaded)
 		 * @param {Number} [options.maxTime=10]			maximum waiting time (sec) for resource loading
@@ -58,13 +68,14 @@
 			// traversing all the resources
 			args.forEach(function (src) {
 				var ext = getExtension(src),
-					element;
+					element, altSources;
 
 				if (isImage(ext)) { // ------------ load image ------------
 					filesToLoad[src] = {type: 'image'};
 
 					element = document.createElement('img');
-					element.crossOrigin = element.crossorigin = 'anonymous';
+					//element.setAttribute('crossorigin', 'anonymous');
+					//element.crossOrigin = 'anonymous';
 					element.onload = function () {
 						delete filesToLoad[src];
 						loadedFiles[src] = element;
@@ -76,14 +87,29 @@
 					filesToLoad[src] = {type: 'video'};
 
 					element = document.createElement('video');
-					element.crossOrigin = element.crossorigin = 'anonymous';
-					element.preload = 'auto';
+					//element.setAttribute('crossorigin', 'anonymous');
+					element.setAttribute('autobuffer', '');
+					//element.crossOrigin = 'anonymous';
+					//element.preload = 'auto';
+
 					element.oncanplay = function () {
 						delete filesToLoad[src];
 						loadedFiles[src] = element;
 						__onload();
 					};
-					element.src = src;
+
+					altSources = [src];
+					if (options.alternatives && options.alternatives.constructor === Array) altSources = altSources.concat(options.alternatives);
+					altSources.forEach(function (_src) {
+						var srcExt = getExtension(_src);
+						if (!isVideo(srcExt)) return;
+
+						var srcEl = document.createElement('source');
+						if (srcExt === 'webm') srcEl.setAttribute('type', 'video/webm');
+						if (srcExt === 'theora.ogv') srcEl.setAttribute('type', 'video/ogg');
+						srcEl.src = _src;
+						element.appendChild(srcEl);
+					});
 				} else {
 					console.log('[ WARN ] Loader: unknown asset type: "' + src + '"; skipping');
 				}

@@ -2,8 +2,8 @@
 // Replace this with your media paths
 // ---------------------------------------------
 var loadingImg = './img/ajax_loader_blue_512.gif';
-var videoOne = './video/big_buck_bunny.mp4';
-var videoTwo = './video/sea-01.ogg';
+var videoOne = './video/BigBuck.m4v';
+var videoTwo = './video/1_scene.mp4';
 var videoThree = './video/sea-02.ogg';
 var videoFour = './video/sea-03.ogg';
 
@@ -44,6 +44,10 @@ function mainLogic (v1, v2, v3, v4) {
 		show(v2);
 		v2.play();
 	}, 5 * 1000);
+
+	setTimeout(function () {
+		v2.pause();
+	}, 10 * 1000);
 }
 
 Loader.load(loadingImg).then(function (imgAssets) {
@@ -52,7 +56,7 @@ Loader.load(loadingImg).then(function (imgAssets) {
 	}
 
 	// both `minTime` and `maxTime` probably must be 10 for your case
-	Loader.load(videoOne, videoTwo, videoThree, videoFour, {minTime: 5, maxTime: 5}).then(function (videoAssets) {
+	Loader.load(videoOne, videoTwo, videoThree, videoFour, {minTime: 3, maxTime: 10}).then(function (videoAssets) {
 		var v1, v2, v3, v4;
 		hide(imgAssets[loadingImg]);
 
