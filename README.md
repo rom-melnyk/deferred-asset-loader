@@ -9,3 +9,10 @@ This mechanism allows:
 
 # Usage
 The code is commented well.
+
+1. Create folders for media resources (_loading..._ image, video files).
+  * **Pay attention,** resources located on another servers are not supported!
+1. Edit the path variavles in the `main.js`.
+1. Edit the `mainLogic();` method to reflect the logic you want to see.
+ 
+Good luck!
